@@ -1,3 +1,8 @@
+// 
+// Process electricity billing data based on the tariff published by electricity distribution company TSSPDCL
+// Applicable Tariffs are encoded in functions Tariff_* 
+//
+
 // =======================================# Test Data
 
 const $case_110662173 = 'TSSPDCL,LT,DOM,0,110662173~03-Jun-20, 9447,  9886,  439, -1150~07-May-20, 9447,  9447,  242, 1319~08-Apr-20, 9447,  9447,  264, 1537~03-Mar-20, 9368,  9447,  79 , 185';
