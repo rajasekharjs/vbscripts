@@ -51,7 +51,7 @@ Private Function ComputeTax(taxSlabs As Variant, value As Double) As Double
         '  pattern:   24, 0.3; => lower bound, tax rate%
         
         If Income > taxSlabs(ptr, 1) Then
-                Tax = Tax + (Income - taxSlabs(ptr, 1)) * taxSlabs(ptr, 3)
+                Tax = Tax + (Income - taxSlabs(ptr, 1)) * taxSlabs(ptr, 2)
                 Income = taxSlabs(ptr, 1)
         End If
     Next
