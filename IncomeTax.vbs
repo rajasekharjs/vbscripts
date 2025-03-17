@@ -4,32 +4,32 @@
 ' 
 Public Function IncomeTax(Year As String, Regime As String, value As Double) As Double
   
+    ' Design Tax slabs as a multi dimensional array
+    ' Tax slab pattern:   24, 0.3; => lower bound, tax rate%
+    
     Dim taxSlabs As Variant
     Dim Tax, Factor, Income As Double
     
     Tax = 0#
     Factor = 100000
-    Income = value / Factor             ' Reduce value by 100,000 factor for simple scale
-
-    ' Tax slabs are designed as a multi dimensional array with highest tab slab at first
-    ' Ex: 20, 24, 0.25; => lower-bound, upper-bound, tax-rate%
-
+    Income = value / Factor
+    
     Select Case UCase(Trim(Year)) & UCase(Trim(Regime))
     Case "FY202425NEW"
-        taxSlabs = [{ 15,-1,0.3; 12,15,0.2; 10,12,0.15; 7,10,0.1; 3,7,0.05 }]
-           
+        taxSlabs = [{ 15,0.3; 12,0.2; 10,0.15; 7,0.1; 3,0.05 }]
+            
     Case "FY202425OLD"
-        taxSlabs = [{ 10,-1,0.3; 5,10,0.2; 2.5,5,0.05 }]
+        taxSlabs = [{ 10,0.3; 5,0.2; 2.5,0.05 }]
 
     Case "FY202526NEW"
-        taxSlabs = [{ 24,-1,0.3; 20,24,0.25; 16,20,0.2; 12,16,0.15; 8,12,0.1; 4,8,0.05 }]
+        taxSlabs = [{ 24,0.3; 20,0.25; 16,0.2; 12,0.15; 8,0.1; 4,0.05 }]
     
     Case "FY202526OLD"
-        taxSlabs = [{ 10,-1,0.3; 5,10,0.2; 2.5,5,0.05 }]
+        taxSlabs = [{ 10,0.3; 5,0.2; 2.5,0.05 }]
     
     Case Else
         ' Zero Slab
-        taxSlabs = [{ 0,0,0; 0,0,0}]
+        taxSlabs = [{ 0,0; 0,0}]
     
     End Select
 
@@ -47,8 +47,8 @@ Private Function ComputeTax(taxSlabs As Variant, value As Double) As Double
     
     For ptr = LBound(taxSlabs, 1) To UBound(taxSlabs, 1)
         
-        '  taxSlab(ptr,1),  taxSlab(ptr,2),  taxSlab(ptr,3)
-        '  pattern:   20, 24, 0.25; => lower-bound, upper-bound, tax-rate%
+        '  taxSlab(ptr,1),  taxSlab(ptr,2)
+        '  pattern:   24, 0.3; => lower bound, tax rate%
         
         If Income > taxSlabs(ptr, 1) Then
                 Tax = Tax + (Income - taxSlabs(ptr, 1)) * taxSlabs(ptr, 3)
