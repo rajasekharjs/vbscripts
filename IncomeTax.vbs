@@ -1,9 +1,6 @@
-'
-' Date: 16-Mar-2025
-' IncomeTax.vbs - Generic function to compute income tax based on tax slabs for a Financial Year
-' 
-Public Function IncomeTax(Year As String, Regime As String, value As Double) As Double
-  
+
+Public Function IncomeTax(value As Double, Optional Year As String = "", Optional Regime As String = "NEW") As Double
+
     ' Design Tax slabs as a multi dimensional array
     ' Tax slab pattern:   24, 0.3; => lower bound, tax rate%
     
@@ -13,6 +10,8 @@ Public Function IncomeTax(Year As String, Regime As String, value As Double) As 
     Tax = 0#
     Factor = 100000
     Income = value / Factor
+    
+    If Year = "" Then Year = "FY202526"
     
     Select Case UCase(Trim(Year)) & UCase(Trim(Regime))
     Case "FY202425NEW"
@@ -29,22 +28,10 @@ Public Function IncomeTax(Year As String, Regime As String, value As Double) As 
     
     Case Else
         ' Zero Slab
-        taxSlabs = [{ 0,0; 0,0}]
+        taxSlabs = Application.Evaluate("{ 0,0; 0,0}")
     
     End Select
 
-    Tax = Factor * ComputeTax(taxSlabs, Income)
-    IncomeTax = Tax
-
-End Function
-
-Private Function ComputeTax(taxSlabs As Variant, value As Double) As Double
-   
-    Dim Tax, Income As Double
-    
-    Tax = 0#
-    Income = value
-    
     For ptr = LBound(taxSlabs, 1) To UBound(taxSlabs, 1)
         
         '  taxSlab(ptr,1),  taxSlab(ptr,2)
@@ -63,8 +50,9 @@ Private Function ComputeTax(taxSlabs As Variant, value As Double) As Double
         Tax = Tax + Tax * 0.1
     End If
 
-    ' Levy cess
-    Tax = Tax + Tax * 0.04
-    ComputeTax = Tax
+    ' Levy 4% cess
+    Tax = Factor * (Tax + Tax * 0.04)
     
+    IncomeTax = Tax
+
 End Function
